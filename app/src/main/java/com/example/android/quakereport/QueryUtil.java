@@ -6,9 +6,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by rupesh on 2/8/17.
@@ -43,11 +52,11 @@ public final class QueryUtil {
     * parsing a JSON response.
     */
 
-    public static ArrayList<Earthquake> extractEarthquakes(){
+    public static List<Earthquake> extractEarthquakes(String jsonResponse){
         ArrayList<Earthquake> earthquakes = new ArrayList<>() ;
 
         try{
-            JSONObject jsonObject = new JSONObject(SAMPLE_JSON_RESPONSE);
+            JSONObject jsonObject = new JSONObject(jsonResponse);
             // getting the json array
             JSONArray jsonArray = jsonObject.getJSONArray("features") ;
 
@@ -71,6 +80,97 @@ public final class QueryUtil {
         return earthquakes ;
     }
 
+    public static List<Earthquake> fetchEarthquakes(String query){
+
+
+        if(query == null || query.length() == 0){
+            return null ;
+        }
+
+        URL link = createURL(query) ;
+
+        String jsonResponse = null ;
+        List<Earthquake> earthquakes = null ;
+        try {
+            jsonResponse = makeHttpRequest(link);
+            earthquakes = QueryUtil.extractEarthquakes(jsonResponse) ;
+
+        } catch (IOException e) {
+            Log.e("EarthquakeActivity","Hudson we have a problem  in loadInBackGround()") ;
+        }
+
+
+        return earthquakes ;
+    }
+
+    private static String makeHttpRequest(URL link) throws IOException {
+
+        String jsonResponse = "" ;
+
+        if(link == null){
+            return jsonResponse;
+        }
+
+        HttpURLConnection httpURLConnection = null ;
+        InputStream inputStream = null ;
+
+        try{
+            httpURLConnection = (HttpURLConnection) link.openConnection();
+            httpURLConnection.setReadTimeout(1000);
+            httpURLConnection.setConnectTimeout(15000);
+            httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.connect();
+
+            if(httpURLConnection.getResponseCode() == 200){
+                inputStream = httpURLConnection.getInputStream();
+                jsonResponse = readFromStream(inputStream);
+
+            }
+            else{
+
+                Log.e("EarthquakeActivity","Hudson we have a problem with connection "+httpURLConnection.getResponseCode()) ;
+            }
+
+        } catch (IOException e) {
+            Log.e("EarthquakeActivity","Hudson we have a problem retrieving JSON results",e) ;
+        }
+        finally {
+            if(httpURLConnection != null){
+                httpURLConnection.disconnect();
+            }
+            if(inputStream != null){
+                inputStream.close();
+            }
+        }
+
+        return jsonResponse ;
+    }
+
+    private static String readFromStream(InputStream inputStream) throws IOException {
+        StringBuilder output = new StringBuilder();
+        if(inputStream != null){
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
+            BufferedReader reader = new BufferedReader(inputStreamReader) ;
+            String line = reader.readLine();
+            while(line != null){
+                output.append(line) ;
+                line = reader.readLine();
+            }
+        }
+        return output.toString() ;
+    }
+
+    private static URL createURL(String s) {
+
+        URL url = null ;
+        try {
+            url = new URL(s) ;
+
+        } catch (MalformedURLException e) {
+            Log.e("EarthquakeAsync","Hudson we have problem creating url",e);
+        }
+        return  url ;
+    }
 
 
 }
