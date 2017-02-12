@@ -1,4 +1,4 @@
-package com.example.android.quakereport;
+package com.simplyu.android.quakereport;
 
 /**
  * Created by rupesh on 2/8/17.

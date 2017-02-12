@@ -1,18 +1,9 @@
-package com.example.android.quakereport;
+package com.simplyu.android.quakereport;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.os.Bundle;
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -21,9 +12,9 @@ import java.util.List;
 
 public class EarthquakeLoader extends AsyncTaskLoader<List<Earthquake>> {
     private String query ;
-    public EarthquakeLoader(Context context, Bundle bundle) {
+    public EarthquakeLoader(Context context, String q) {
         super(context);
-        query = bundle.getString("query") ;
+        query = q ;
 
     }
 

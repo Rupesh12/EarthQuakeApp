@@ -1,4 +1,4 @@
-package com.example.android.quakereport;
+package com.simplyu.android.quakereport;
 
 import android.util.Log;
 
@@ -14,9 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
