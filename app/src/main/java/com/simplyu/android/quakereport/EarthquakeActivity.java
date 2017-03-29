@@ -45,7 +45,7 @@ public class EarthquakeActivity extends AppCompatActivity implements android.app
     private TextView mEmptyView ;
     private ListView earthquakeListView = null ;
     private View loading_spinner= null ;
-    private final String QUERY = "http://earthquake.usgs.gov/fdsnws/event/1/query" ;
+    private final String QUERY = "https ://earthquake.usgs.gov/fdsnws/event/1/query" ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
